@@ -15,24 +15,42 @@ usage:
 
 import pandas as pd
 import utils, sys
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from textblob import TextBlob
 
 assert len(sys.argv) == 2, "You must provide a single positional argument"
 
-conn = get_conn()
+# DB connection
+conn = utils.get_conn()
 
 # get raw data
 print("Loading raw data ...")
 dat = utils.get_data(conn)
-    
-# extract feelings
-print("Extracting feelings from raw data ...")
-dat['feeling'] = dat.apply(utils.extract_feeling, axis=1)
 
 # subset data to the following columns
 keep_col = ['created_utc','downs','edited','gilded','id','is_self','name',
             'num_comments','over_18','score','selftext','subreddit',
-            'subreddit_id','title','ups','feeling']
+            'subreddit_id','title','ups']
+    
+# clean-up submission title
+print("Extracting feelings from raw data ...")
+col = 'feeling'
+dat[col] = dat.apply(utils.extract_feeling, axis=1)
+keep_col.append(col)
 
-# write to new database table
+# parse sentiments with vaderSentiment
+print("Parsing vaderSentiments ...")
+sa = SentimentIntensityAnalyzer()
+vs = dat.feeling.map(lambda i: sa.polarity_scores("I feel " + i))
+dat = dat.join(pd.DataFrame(index=vs.index, data=vs.values.tolist()))
+keep_col += ['neg','neu','pos','compound']
+
+# parse sentiment with TextBlob
+print("Parsing TextBlob sentiments ...")
+tb = dat.feeling.map(lambda i: TextBlob("I feel " + i).sentiment)
+dat = dat.join(pd.DataFrame(index=tb.index, data=tb.values.tolist()))
+keep_col += ['polarity','subjectivity']
+
+# write to database
 dat[keep_col].to_sql(sys.argv[1], conn, if_exists='replace')
 print("Results written to table " + sys.argv[1])

@@ -1,4 +1,4 @@
-.PHONY: setup_database scrape_data parse_raw_data
+.PHONY: setup_database scrape_i_feel parse_raw_data scrape_categories
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -12,12 +12,16 @@ DB_NAME = i_feel
 #################################################################################
 
 ## Generate all data, setup database, etc
-data: setup_database scrape_data parse_raw_data
+data: setup_database scrape_reddit_i_feel parse_raw_data categories
 
 
 ## Scrape raw data from Reddit and store it in a Postgres db
-scrape_data:
-	python src/scrape_data.py --start 2010-01-01 --end 2018-01-01
+scrape_i_feel:
+	python src/scrape_reddit_i_feel.py --start 2010-01-01 --end 2018-01-01
+
+## Group subreddits into categories a la http://redditlist.com/
+scrape_categories:
+	python src/scrape_reddit_categories.py
 
 ## Parse the scraped data and write it to new table in db
 parse_raw_data:
@@ -37,6 +41,9 @@ dump_database:
 load_dump:
 	pg_restore -c --if-exists --no-acl --no-owner -d $(DB_NAME) data/raw/backup.dump
 
+## Update requirements
+freeze:
+	pip freeze > requirements.txt
 
 
 

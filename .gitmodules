@@ -1,0 +1,6 @@
+[submodule "src/wordnet-domains-sentiwords"]
+	path = src/wordnet-domains-sentiwords
+	url = https://github.com/larsmans/wordnet-domains-sentiwords.git
+[submodule "src/WNAffect"]
+	path = src/WNAffect
+	url = https://github.com/clemtoy/WNAffect.git

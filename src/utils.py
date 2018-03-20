@@ -5,6 +5,7 @@ import pandas as pd
 from string import punctuation
 from sqlalchemy import create_engine
 
+
 def get_conn(db_name='i_feel'):
     '''
     Get a sqlalchemy connection engine for the given database
@@ -33,21 +34,21 @@ def get_data(conn, table_name = 'raw_query'):
             df[col] = pd.to_datetime(df[col], unit='s')
     
     return df
-    
 
 def extract_feeling(row):
     '''
     Helper function used with .apply() to extract "feeling" from submission title.
 
     Param:
-        row - pandas row object
+        row - pandas row object, must have `title` attribute
 
     Return:
         string of extracted feeling from row.title
     '''
     feeling = re.split(r"(?i)feels?", row.title)[1] # split on feel/feels
-    feeling = feeling.split('. ')[0] # remove any trailing sentences
+    feeling = re.split('[\.!?]', feeling)[0] # remove any trailing sentences
     feeling = re.sub("\[(.*?)\]", "", feeling) # remove flair like '[M29]'
-    feeling = feeling.rstrip(punctuation) # removing trailing punctuation
+    feeling = feeling.lstrip(punctuation).rstrip('!?.').strip() # removing punctuation
 
     return feeling
+

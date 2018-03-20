@@ -10,7 +10,7 @@ description:
 
 examples:
 
-    python run.py --start 2017-01-01 --end 2018-01-01
+    python scrape_reddit_i_feel.py --start 2017-01-01 --end 2018-01-01
 """
 
 
@@ -51,6 +51,28 @@ class SmartFormatter(argparse.HelpFormatter):
 
 def write_listing_to_db(conn, listing, prev_id=set([])):
 
+    # allowed fields for database
+    db_cols = set(['approved_at_utc','approved_by','archived','author',
+                   'author_cakeday','author_flair_css_class',
+                   'author_flair_text','banned_at_utc','banned_by',
+                   'brand_safe','can_gild','can_mod_post','clicked',
+                   'comment_limit','comment_sort','contest_mode','created',
+                   'created_utc','crosspost_parent','distinguished',
+                   '"domain"','downs','downloaded_utc','edited','gilded',
+                   'hidden','hide_score','id','is_crosspostable',
+                   'is_reddit_media_domain','is_self','is_video','likes',
+                   'link_flair_css_class','link_flair_text','locked',
+                   'media','mod_note','mod_reason_by','mod_reason_title',
+                   'name','num_comments','num_crossposts','num_reports',
+                   'over_18','parent_whitelist_status','permalink','pinned',
+                   'post_hint','quarantine','removal_reason',
+                   'report_reasons','saved','score','secure_media',
+                   'selftext','selftext_html','spoiler','stickied',
+                   'subreddit','subreddit_id','subreddit_name_prefixed',
+                   'subreddit_type','suggested_sort','thumbnail',
+                   'thumbnail_height','thumbnail_width','title','ups','url',
+                   'view_count','visited','whitelist_status'])
+
     # convert/delete some of the listing values
     # so that we can properly insert it into the DB
     dat = {k:v for k,v in vars(listing).items() if type(v) not in [list,dict]}
@@ -62,8 +84,8 @@ def write_listing_to_db(conn, listing, prev_id=set([])):
 
         # prep statement
         # https://stackoverflow.com/a/29471241/1153897
-        vals = [v for k,v in dat.items() if k[0] != '_']
-        cols = [k for k,v in dat.items() if k[0] != '_']
+        vals = [v for k,v in dat.items() if k in db_cols]
+        cols = [k for k,v in dat.items() if k in db_cols]
 
         sql = 'INSERT INTO raw_query (%s) values %s'
         cursor = conn.cursor()
