@@ -1,6 +1,6 @@
 # I feel
 
-Analysis of how Reddits feels.
+Analysis of how Reddit feels.
 
 :construction: Repo is in progress! :construction:
 
