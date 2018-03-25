@@ -2,6 +2,8 @@
 
 Analysis of how Reddits feels.
 
+:construction: Repo is in progress! :construction:
+
 
 ## Scratch
 
