@@ -6,7 +6,7 @@ Analysis of how Reddit feels.
 
 ## Data dump
 
-Data publicly available [here](https://osf.io/zbfmg/)
+Data publicly available [here](https://osf.io/zbfmg/).
 
 ## Scratch
 
