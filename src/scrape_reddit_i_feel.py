@@ -93,6 +93,9 @@ def write_listing_to_db(conn, listing, prev_id=set([])):
         cursor.execute(statement)
         conn.commit()
 
+        print(time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(dat['created'])))
+
+
 
 def build_query(kw):
 
@@ -181,8 +184,6 @@ def main (args):
 
     # query reddit
     for day in range(start, end, window):
-
-        print(time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(day)))
 
         for submission in run_query(day, day+window-1):
             write_listing_to_db(conn, submission, prev_id)

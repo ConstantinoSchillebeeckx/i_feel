@@ -35,7 +35,7 @@ setup_database:
 
 ## Dump database 
 dump_database:
-	pg_dump $(DB_NAME) -O -F c > data/raw/backup.dump
+	pg_dump $(DB_NAME) -O -F c > data/raw/data.dump
 
 ## Load database dump generated from `dump_database`
 load_dump:
