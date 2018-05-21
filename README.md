@@ -1,7 +1,12 @@
 # I feel
 
-Analysis of how Reddits feels.
+Analysis of how Reddit feels.
 
+:construction: Repo is in progress! :construction:
+
+## Data dump
+
+Data publicly available [here](https://osf.io/zbfmg/).
 
 ## Scratch
 
